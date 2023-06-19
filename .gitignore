@@ -1,3 +1,4 @@
 .env
 .vscode
 key_logs
+__pycache__
