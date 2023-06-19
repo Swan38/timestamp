@@ -1,11 +1,22 @@
 import socket
 import time
-from datetime import datetime
 import pandas as pd
+from datetime import datetime
+import win32api
 
 from connection import PORT, SIZE, decode_timestamp
+from discovery import get_server_address
 
-HOST = "192.168.137.1"  # The server's hostname or IP address
+HOST = None
+while True:
+    HOST = get_server_address()
+    if HOST is None:
+        print("Server not found")
+        time.sleep(1)
+    else:
+        break
+
+print(f"Server address: {HOST}:{PORT}")
 
 measures: pd.DataFrame = pd.DataFrame(columns=("elapsed_time", "server_offset_seconds"))
 
@@ -39,3 +50,12 @@ best_measures = measures[measures["elapsed_time"] <= measures["elapsed_time"].me
 server_offset_seconds = best_measures["server_offset_seconds"].mean()
 
 print(f"server_offset_seconds = {server_offset_seconds*1000:.3f} ± {best_measures['server_offset_seconds'].std()*1000:.3f} ms")
+
+y_n = input("Do you want to update this computer system's time? (y/n): ")
+
+if y_n == "y":
+    offset_s = server_offset_seconds - win32api.GetTimeZoneInformation()[0]*3600
+    corrected_time = datetime.fromtimestamp(time.time() + offset_s)
+    win32api.SetSystemTime(corrected_time.year, corrected_time.month, corrected_time.weekday(), corrected_time.day,
+                           corrected_time.hour, corrected_time.minute, corrected_time.second,
+                           int(corrected_time.microsecond/1000))
