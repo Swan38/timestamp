@@ -21,6 +21,7 @@ def respond(conn):
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((SERVER_ADDRESS, PORT))
+    print(f"binded to {SERVER_ADDRESS}:{PORT}")
     s.listen()
     while True:
         conn, addr = s.accept()
