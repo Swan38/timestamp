@@ -11,5 +11,8 @@ def key_event_stringify(keyboard_event: keyboard.KeyboardEvent):
 
 keyboard.hook(lambda keyboard_event: logging.info(key_event_stringify(keyboard_event)))
 
-while True:
-    ...
+try:
+    while True:
+        ...
+except KeyboardInterrupt as error:
+    pass
