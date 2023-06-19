@@ -5,7 +5,8 @@ import threading
 
 from connection import PORT, SIZE, encode_timestamp
 
-HOST = "192.168.137.1"  # Standard loopback interface address (localhost)
+HOSTNAME = socket.gethostname()
+SERVER_ADDRESS = socket.gethostbyname(HOSTNAME)
 
 def respond(conn):
     with conn:
@@ -19,7 +20,7 @@ def respond(conn):
                 break
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
+    s.bind((SERVER_ADDRESS, PORT))
     s.listen()
     while True:
         conn, addr = s.accept()
