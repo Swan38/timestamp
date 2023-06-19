@@ -24,6 +24,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     print(f"binded to {SERVER_ADDRESS}:{PORT}")
     s.listen()
     while True:
-        conn, addr = s.accept()
-        print(f"Connected by {addr}")
-        threading.Thread(target=partial(respond, conn), daemon=True).start()
+        try:
+            conn, addr = s.accept()
+            print(f"Connected by {addr}")
+            threading.Thread(target=partial(respond, conn), daemon=True).start()
+        except KeyboardInterrupt as error:
+            break
